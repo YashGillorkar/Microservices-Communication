@@ -1,6 +1,7 @@
 package com.yash.orderservice;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,4 +21,14 @@ public class ProductServiceClient {
     public Product getProductById(Long productId) {
         return restTemplate.getForObject(productServiceUrl + "/" + productId, Product.class);
     }
+
+	public ResponseEntity<Product> getProductById2(Long productId) {
+		return restTemplate.getForEntity(productServiceUrl + "/"+productId, Product.class);
+		 
+	}
+
+	public Product saveProduct(Product entity) {
+		 Product product = restTemplate.postForObject(productServiceUrl, entity, Product.class);
+		return product;
+	}
 }

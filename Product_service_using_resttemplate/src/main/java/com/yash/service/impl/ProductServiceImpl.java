@@ -2,6 +2,7 @@ package com.yash.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,35 @@ public class ProductServiceImpl implements ProductServiceI {
 			listDTO.add(ProductMapper.convertToResponseDTO(product));
 		}
 		return listDTO;
+	}
+
+	@Override
+	public ProductResponseDTO updateProduct(Long id, Product entity) {
+		Optional<Product> existingProduct = productRepository.findById(id);
+		if (existingProduct.isPresent()) {
+			Product product = existingProduct.get();
+			if (entity.getName() != null) {
+				product.setName(entity.getName());
+			}
+			if (entity.getPrice() != null) {
+				product.setPrice(entity.getPrice());
+			}
+			Product p = productRepository.save(product);
+			return ProductMapper.convertToResponseDTO(p);
+		} else {
+			throw new InvalidProductIdException("Invalid Id " + id);
+		}
+	}
+
+	@Override
+	public void deleteProduct(Long id) {
+		Optional<Product> existingProduct = productRepository.findById(id);
+		if (existingProduct.isPresent()) {
+			productRepository.delete(existingProduct.get());
+		} else {
+			throw new InvalidProductIdException("Invalid Id " + id);
+		}
+
 	}
 
 }
